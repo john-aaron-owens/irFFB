@@ -36,8 +36,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define STOPS_MAXFORCE_RAD 0.2618f // 15 deg
 #define DAMPING_MULTIPLIER 800.0f
 #define DAMPING_MULTIPLIER_STOPS 150000.0f
-#define USTEER_MIN_OFFSET 0.175f
-#define USTEER_MULTIPLIER 0.0075f
 #define DIRECT_INTERP_SAMPLES 6
 #define SETTINGS_KEY L"Software\\irFFB\\Settings"
 #define RUN_ON_STARTUP_KEY L"Software\\Microsoft\\Windows\\CurrentVersion\\Run"
@@ -94,12 +92,6 @@ struct LogiLedData {
     DWORD size;
     DWORD version;
     LogiRpmData rpmData;
-};
-
-struct understeerCoefs {
-    char *car;
-    float yawRateMult;
-    float latAccelDiv;
 };
 
 DWORD WINAPI readWheelThread(LPVOID);

@@ -103,8 +103,6 @@ void Settings::setBumpsWnd(sWins_t *wnd) { bumpsWnd = wnd; }
 void Settings::setDampingWnd(sWins_t *wnd) { dampingWnd = wnd; }
 void Settings::setSopWnd(sWins_t *wnd) { sopWnd = wnd; } 
 void Settings::setSopOffsetWnd(sWins_t *wnd) { sopOffsetWnd = wnd; }
-void Settings::setUndersteerWnd(sWins_t *wnd) { understeerWnd = wnd; }
-void Settings::setUndersteerOffsetWnd(sWins_t *wnd) { understeerOffsetWnd = wnd; }
 void Settings::setUse360Wnd(HWND wnd) { use360Wnd = wnd; }
 void Settings::setReduceWhenParkedWnd(HWND wnd) { reduceWhenParkedWnd = wnd; }
 void Settings::setCarSpecificWnd(HWND wnd) { carSpecificWnd = wnd; }
@@ -234,32 +232,6 @@ bool Settings::setSopOffset(float offset, HWND wnd) {
     if (wnd != sopOffsetWnd->value) {
         swprintf_s(strbuf, L"%.1f", offset);
         SendMessage(sopOffsetWnd->value, WM_SETTEXT, NULL, LPARAM(strbuf));
-    }
-    return true;
-}
-
-bool Settings::setUndersteerFactor(float factor, HWND wnd) {
-    if (factor < 0.0f || factor > 100.0f)
-        return false;
-    understeerFactor = factor;
-    if (wnd != understeerWnd->trackbar)
-        SendMessage(understeerWnd->trackbar, TBM_SETPOS, TRUE, (int)factor);
-    if (wnd != understeerWnd->value) {
-        swprintf_s(strbuf, L"%.1f", factor);
-        SendMessage(understeerWnd->value, WM_SETTEXT, NULL, LPARAM(strbuf));
-    }
-    return true;
-}
-
-bool Settings::setUndersteerOffset(float offset, HWND wnd) {
-    if (offset < 0.0f || offset > 100.0f)
-        return false;
-    understeerOffset = offset / 250.0f;
-    if (wnd != understeerOffsetWnd->trackbar)
-        SendMessage(understeerOffsetWnd->trackbar, TBM_SETPOS, TRUE, (int)offset);
-    if (wnd != understeerOffsetWnd->value) {
-        swprintf_s(strbuf, L"%.1f", offset);
-        SendMessage(understeerOffsetWnd->value, WM_SETTEXT, NULL, LPARAM(strbuf));
     }
     return true;
 }
@@ -397,8 +369,6 @@ void Settings::readGenericSettings() {
         setDampingFactor(0.0f, (HWND)-1);
         setSopFactor(0.0f, (HWND)-1);
         setSopOffset(0.0f, (HWND)-1);
-        setUndersteerFactor(0.0f, (HWND)-1);
-        setUndersteerOffset(0.0f, (HWND)-1);
         setUse360ForDirect(true);
         return;
     }
@@ -410,8 +380,6 @@ void Settings::readGenericSettings() {
     setDampingFactor(getRegSetting(key, L"dampingFactor", 0.0f), (HWND)-1);
     setSopFactor(getRegSetting(key, L"yawFactor", 0.0f), (HWND)-1);
     setSopOffset(getRegSetting(key, L"yawOffset", 0.0f), (HWND)-1);
-    setUndersteerFactor(getRegSetting(key, L"understeerFactor", 0.0f), (HWND)-1);
-    setUndersteerOffset(getRegSetting(key, L"understeerOffset", 0.0f), (HWND)-1);
     setUse360ForDirect(getRegSetting(key, L"use360ForDirect", true));
 
     RegCloseKey(key);
@@ -507,8 +475,6 @@ void Settings::readSettingsForCar(char *car) {
     setDampingFactor(damping, (HWND)-1);
     setSopFactor(yaw, (HWND)-1);
     setSopOffset(yawOffset, (HWND)-1);
-    setUndersteerFactor(understeer, (HWND)-1);
-    setUndersteerOffset(understeerOffset, (HWND)-1);
     setUse360ForDirect(use360 > 0);
 
 DONE:

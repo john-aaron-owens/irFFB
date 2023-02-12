@@ -75,67 +75,6 @@ float firc12[] =
 
 
 char car[MAX_CAR_NAME];
-understeerCoefs usteerCoefs[] = {
-    { "astonmartin dbr9",   46.0f, 78.0f  },
-    { "amvantagegt4",       40.0f, 70.0f  },
-    { "audi90gto",          40.0f, 70.0f  },
-    { "audir18",            38.0f, 110.0f },
-    { "audirs3lms",         40.0f, 70.0f  },
-    { "audir8gt3",          52.0f, 78.0f  },
-    { "bmwm8gte",           46.0f, 78.0f  },
-    { "bmwm4gt4",           40.0f, 70.0f  },
-    { "bmwz4gt3",           54.0f, 80.0f  },
-    { "bmwm4gt3",           37.5f, 82.0f  },
-    { "c6r",                40.5f, 82.0f  },
-    { "c8rvettegte",        48.0f, 78.0f  },
-    { "dallaraf3",          38.0f, 102.0f },
-    { "dallarair18",        44.0f, 110.0f },
-    { "dallarap217",        44.0f, 110.0f },
-    { "ferrari488gt3",      52.0f, 78.0f  },
-    { "ferrarievogt3",      54.0f, 80.0f  },
-    { "ferrari488gte",      44.0f, 82.0f  },
-    { "fordgt gt3",         52.0f, 78.0f  },
-    { "formulair04",        40.0f, 100.0f },
-    { "formulamazda",       34.5f, 96.0f  },
-    { "formularenault20",   38.5f, 100.0f },
-    { "formularenault35",   44.0f, 110.0f },
-    { "formulavee",         23.0f, 68.0f  },
-    { "fr500s",             40.0f, 70.0f  },
-    { "hondacivictyper",    40.0f, 70.0f  },
-    { "hpdarx01c",          44.0f, 110.0f },
-    { "hyundaielantracn7",  40.0f, 70.0f  },
-    { "hyundaivelostern",   40.0f, 70.0f  },
-    { "indypropm18",        34.5f, 100.0f },
-    { "lamborghinievogt3",  52.0f, 78.0f  },
-    { "lotus49",            23.8f, 70.0f  },
-    { "lotus79",            27.8f, 104.0f },
-    { "mclaren570sgt4",     40.0f, 70.0f  },
-    { "mclarenmp4",         52.0f, 78.0f  },
-    { "mclarenmp430",       38.0f, 110.0f },
-    { "mercedesamggt3",     37.5f, 82.0f  },
-    { "mercedesamgevogt3",  40.5f, 84.0f  },
-    { "mercedesamggt4",     40.0f, 70.0f  },
-    { "mercedesw12",        48.0f, 120.0f },
-    { "mx5 mx52016",        36.0f, 96.0f  },
-    { "nissangtpzxt",       44.0f, 110.0f },
-    { "porsche718gt4",      40.0f, 70.0f  },
-    { "porsche911cup",      46.0f, 88.0f  },
-    { "porsche992cup",      48.0f, 90.0f  },
-    { "porsche911rgt3",     52.0f, 80.0f  },
-    { "porsche919",         38.0f, 110.0f },
-    { "porsche991rsr",      42.0f, 72.0f  },
-    { "radical sr8",        40.0f, 100.0f },
-    { "radicalsr10",        44.0f, 110.0f },
-    { "rt2000",             25.0f, 86.0f  },
-    { "rufrt12r track",     46.0f, 88.0f  },
-    { "specracer",          25.0f, 86.0f  },
-    { "stockcarbrasil corolla",     40.0f, 70.0f  },
-    { "stockcarbrasil cruze",       40.0f, 70.0f  },
-    { "usf2000usf17",       34.5f, 96.0f  },
-    { "v8supercars fordmustanggt",  52.0f, 78.0f  },
-    { "v8supercars holden2019",     52.0f, 78.0f  },
-    { "williamsfw31",       38.0f, 110.0f }
-};
 
 int force = 0;
 volatile float suspForce = 0.0f; 
@@ -536,19 +475,6 @@ float getCarRedline()
     return 8000.0f;
 }
 
-understeerCoefs *getCarUsteerCoeffs(char *car) {
-
-    for (int i = 0; i < sizeof(usteerCoefs) / sizeof(usteerCoefs[0]); i++)
-        if (!strcmp(car, usteerCoefs[i].car)) {
-            debug(L"We have understeer coeffs for car %s", car);
-            return &usteerCoefs[i];
-        }
-
-    debug(L"No understeer coeffs for car %s", car);
-    return nullptr;
-
-}
-
 void clippingReport() 
 {
     float clippedPerCent = samples > 0 ? (float)clippedSamples * 100.0f / samples : 0.0f;
@@ -675,8 +601,6 @@ int APIENTRY wWinMain(
     float halfSteerMax = 0, lastTorque = 0, lastSuspForce = 0, redline;
     float yaw = 0.0f, yawFilter[DIRECT_INTERP_SAMPLES];
 
-    understeerCoefs *usCoefs;
-
     ccEx.dwICC = ICC_WIN95_CLASSES | ICC_BAR_CLASSES | ICC_STANDARD_CLASSES;
     ccEx.dwSize = sizeof(ccEx);
     InitCommonControlsEx(&ccEx);
@@ -790,12 +714,6 @@ int APIENTRY wWinMain(
             redline = getCarRedline();
              debug(L"Redline is %d rpm", (int)redline);
             
-            usCoefs = getCarUsteerCoeffs(car);
-            EnableWindow(settings.getUndersteerWnd()->trackbar, usCoefs != nullptr);
-            EnableWindow(settings.getUndersteerWnd()->value, usCoefs != nullptr);
-            EnableWindow(settings.getUndersteerOffsetWnd()->trackbar, usCoefs != nullptr);
-            EnableWindow(settings.getUndersteerOffsetWnd()->value, usCoefs != nullptr);
-
             // Inform iRacing of the maxForce setting
             irsdk_broadcastMsg(irsdk_BroadcastFFBCommand, irsdk_FFBCommand_MaxForce, (float)settings.getMaxForce());
 
@@ -905,18 +823,7 @@ int APIENTRY wWinMain(
                             sa -= csignf(sopOffset, sa);
                             yaw = minf(maxf(sa * (2.0f - asa) * sopFactor, -halfMaxForce), halfMaxForce);
                         }
-                    }                    
-                    
-                    if (usCoefs != nullptr && settings.getUndersteerFactor() > 0.0f) {
-
-                        reqSteer = abs((*yawRate * usCoefs->yawRateMult) / *speed + *latAccel / usCoefs->latAccelDiv);
-                        uSteer = minf(abs(*steer) - reqSteer - USTEER_MIN_OFFSET - settings.getUndersteerOffset(), 1.0f);
-
-                        if (uSteer > 0.0f)
-                            yaw -= uSteer * settings.getUndersteerFactor() * USTEER_MULTIPLIER * *swTorque;
-
-                    }
-
+                    }     
                 }
 
                 if (LFshockDeflST != nullptr && RFshockDeflST != nullptr && bumpsFactor != 0.0f) 
@@ -1350,8 +1257,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
     settings.setMaxWnd(slider(mainWnd, L"Max force:", 44, 226, L"5 Nm", L"65 Nm", false));
     settings.setDampingWnd(slider(mainWnd, L"Damping:", 44, 298, L"0", L"100", true));
     settings.setBumpsWnd(slider(mainWnd, L"Suspension bumps:", 464, 40, L"0", L"100", true));
-    settings.setUndersteerWnd(slider(mainWnd, L"Understeer:", 464, 100, L"0", L"100", true));
-    settings.setUndersteerOffsetWnd(slider(mainWnd, L"Understeer offset:", 464, 160, L"0", L"100", true));
     settings.setSopWnd(slider(mainWnd, L"SoP effect:", 464, 220, L"0", L"100", true));
     settings.setSopOffsetWnd(slider(mainWnd, L"SoP offset:", 464, 280, L"0", L"100", true));
     settings.setUse360Wnd(
@@ -1522,10 +1427,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
                 settings.setSopFactor((float)SendMessage(wnd, TBM_GETPOS, 0, 0), wnd);
             else if (wnd == settings.getSopOffsetWnd()->trackbar)
                 settings.setSopOffset((float)SendMessage(wnd, TBM_GETPOS, 0, 0), wnd);
-            else if (wnd == settings.getUndersteerWnd()->trackbar)
-                settings.setUndersteerFactor((float)SendMessage(wnd, TBM_GETPOS, 0, 0), wnd);
-            else if (wnd == settings.getUndersteerOffsetWnd()->trackbar)
-                settings.setUndersteerOffset((float)SendMessage(wnd, TBM_GETPOS, 0, 0), wnd);
         }
         break;
 
