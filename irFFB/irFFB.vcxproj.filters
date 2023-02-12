@@ -30,16 +30,16 @@
     <ClCompile Include="yaml_parser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="jetseat.cpp">
+    <ClCompile Include="vJoyInterface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hidguardian.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="fan.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="vJoyInterface.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="hidguardian.cpp">
+    <ClCompile Include="jetseat.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -68,19 +68,19 @@
     <ClInclude Include="yaml_parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="jetseat.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="IUberwoorf.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="fan.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="hidguardian.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="fan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="jetseat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
