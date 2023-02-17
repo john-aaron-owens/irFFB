@@ -98,18 +98,27 @@ LARGE_INTEGER freq;
 int vjDev = 1;
 FFB_DATA ffbPacket;
 
+const wchar_t* GetWC(const char* c)
+{
+    const size_t cSize = strlen(c) + 1;
+    wchar_t* wc = new wchar_t[cSize];
+    mbstowcs(wc, c, cSize);
+
+    return wc;
+}
+
 float *floatvarptr(const char *data, const char *name) 
 {
     int idx = irsdk_varNameToIndex(name);
     if (idx >= 0)
     {
         float* value = (float*)(data + irsdk_getVarHeaderEntry(idx)->offset);
-        debug(L"float var: %s=%d", name, *value);
+        debug(L"float var: %s=%f", GetWC(name), *value);
         return value;
     }
     else
     {
-        debug(L"float var not found: %s", name);
+        debug(L"float var not found: %s", GetWC(name));
         return nullptr;
     }
 }
@@ -120,12 +129,12 @@ int *intvarptr(const char *data, const char *name)
     if (idx >= 0)
     {
         int* value = (int*) (data + irsdk_getVarHeaderEntry(idx)->offset);
-        debug(L"int var: %s=%d", name, *value);
+        debug(L"int var: %s=%d", GetWC(name), *value);
         return value;
     }
     else
     {
-        debug(L"int var not found: %s", name);
+        debug(L"int var not found: %s", GetWC(name));
         return nullptr;
     }
 }
@@ -136,12 +145,12 @@ bool *boolvarptr(const char *data, const char *name)
     if (idx >= 0)
     {
         bool* value = (bool*)(data + irsdk_getVarHeaderEntry(idx)->offset);
-        debug(L"bool var: %s=%d", name, *value);
+        debug(L"bool var: %s=%d", GetWC(name), *value);
         return value;
     }
     else
     {
-        debug(L"bool var not found: %s", name);
+        debug(L"bool var not found: %s", GetWC(name));
         return nullptr;
     }
 }
@@ -572,7 +581,6 @@ int APIENTRY wWinMain(
     _In_ LPWSTR    lpCmdLine,
     _In_ int       nCmdShow) 
 {
-
     UNREFERENCED_PARAMETER(hPrevInstance);
 
     if (StrStrW(lpCmdLine, CMDLINE_HGSVC)) 
@@ -2066,6 +2074,9 @@ bool initVJD()
     if (!vJoyEnabled()) 
 	{
         text(L"vJoy not enabled!");
+        float fvalue = 5.5f;
+        float* value = &fvalue;
+        test("Test", value);
         return false;
     }
     else
