@@ -2074,9 +2074,6 @@ bool initVJD()
     if (!vJoyEnabled()) 
 	{
         text(L"vJoy not enabled!");
-        float fvalue = 5.5f;
-        float* value = &fvalue;
-        test("Test", value);
         return false;
     }
     else
