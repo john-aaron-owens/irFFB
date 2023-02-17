@@ -102,27 +102,48 @@ float *floatvarptr(const char *data, const char *name)
 {
     int idx = irsdk_varNameToIndex(name);
     if (idx >= 0)
-        return (float *)(data + irsdk_getVarHeaderEntry(idx)->offset);
+    {
+        float* value = (float*)(data + irsdk_getVarHeaderEntry(idx)->offset);
+        debug(L"float var: %s=%d", name, *value);
+        return value;
+    }
     else
+    {
+        debug(L"float var not found: %s", name);
         return nullptr;
+    }
 }
 
 int *intvarptr(const char *data, const char *name) 
 {
     int idx = irsdk_varNameToIndex(name);
     if (idx >= 0)
-        return (int *)(data + irsdk_getVarHeaderEntry(idx)->offset);
+    {
+        int* value = (int*) (data + irsdk_getVarHeaderEntry(idx)->offset);
+        debug(L"int var: %s=%d", name, *value);
+        return value;
+    }
     else
+    {
+        debug(L"int var not found: %s", name);
         return nullptr;
+    }
 }
 
 bool *boolvarptr(const char *data, const char *name) 
 {
     int idx = irsdk_varNameToIndex(name);
     if (idx >= 0)
-        return (bool *)(data + irsdk_getVarHeaderEntry(idx)->offset);
+    {
+        bool* value = (bool*)(data + irsdk_getVarHeaderEntry(idx)->offset);
+        debug(L"bool var: %s=%d", name, *value);
+        return value;
+    }
     else
+    {
+        debug(L"bool var not found: %s", name);
         return nullptr;
+    }
 }
 
 int sign(int x)
@@ -185,7 +206,6 @@ DWORD WINAPI readWheelThread(LPVOID lParam)
                 }
 			}
 
-            // This could be wrong, untested..
             if (vjPov > 0)
 			{				
                 for (int i = 0; i < numPov && i < 4; i++)
