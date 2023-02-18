@@ -17,8 +17,6 @@ class Settings {
         Settings();
         void setDevWnd(HWND);
         HWND getDevWnd() { return devWnd; };
-        void setFfbWnd(HWND);
-        HWND getFfbWnd() { return ffbWnd; };
         void setMinWnd(sWins_t *);
         sWins_t *getMinWnd() { return minWnd; };
         void setMaxWnd(sWins_t *);
@@ -49,8 +47,6 @@ class Settings {
         void setFfbDevice(int);
         bool isFfbDevicePresent();
         GUID getFfbDevice() { return devGuid; };
-        void setFfbType(int);
-        int getFfbType() { return ffbType; };
         bool setMinForce(int, HWND);
         int getMinForce() { return minForce; };
         bool setMaxForce(int, HWND);

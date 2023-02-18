@@ -65,17 +65,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define DFGTPATH L"vid_046d&pid_c29a"
 #define G27PATH  L"vid_046d&pid_c29b"
 
-#define LOGI_WHEEL_HID_CMD "\x00\xf8\x81\x84\x03\x00\x00\x00\x00"
-#define LOGI_WHEEL_HID_CMD_LEN 9
-
-enum ffbType {
-    FFBTYPE_360HZ,
-    FFBTYPE_360HZ_INTERP,
-    FFBTYPE_DIRECT_FILTER,
-    FFBTYPE_DIRECT_FILTER_720,
-    FFBTYPE_UNKNOWN
-};
-
 typedef struct sWins {
     HWND trackbar;
     HWND label;

@@ -83,12 +83,6 @@ Settings::Settings() {
 
 void Settings::setDevWnd(HWND wnd) { devWnd = wnd; }
 
-void Settings::setFfbWnd(HWND wnd) { 
-    ffbWnd = wnd; 
-    for (int i = 0; i < FFBTYPE_UNKNOWN; i++)
-        SendMessage(ffbWnd, CB_ADDSTRING, 0, LPARAM(ffbTypeString(i)));
-}
-        
 void Settings::setMinWnd(sWins_t *wnd) {
     minWnd = wnd; 
     SendMessage(minWnd->trackbar, TBM_SETRANGE, TRUE, MAKELPARAM(0, 20));
@@ -142,17 +136,6 @@ bool Settings::isFfbDevicePresent() {
     return false;
 }
         
-void Settings::setFfbType(int type) {
-    if (type >= FFBTYPE_UNKNOWN)
-        return;
-    ffbType = type;
-    SendMessage(ffbWnd, CB_SETCURSEL, ffbType, 0);
-    EnableWindow(
-        use360Wnd,
-        ffbType == FFBTYPE_DIRECT_FILTER || ffbType == FFBTYPE_DIRECT_FILTER_720
-    );    
-}
-
 bool Settings::setMinForce(int min, HWND wnd) {
     if (min < 0.0f || min > 20.0f)
         return false;
@@ -362,7 +345,6 @@ void Settings::readGenericSettings() {
     HKEY key = getSettingsRegKey();
 
     if (key == NULL) {
-        setFfbType(FFBTYPE_DIRECT_FILTER);
         setMinForce(0, (HWND)-1);
         setMaxForce(45, (HWND)-1);
         setBumpsFactor(0.0f, (HWND)-1);
@@ -373,7 +355,6 @@ void Settings::readGenericSettings() {
         return;
     }
 
-    setFfbType(getRegSetting(key, L"ffb", FFBTYPE_DIRECT_FILTER));
     setMaxForce(getRegSetting(key, L"maxForce", 45), (HWND)-1);
     setMinForce(getRegSetting(key, L"minForce", 0), (HWND)-1);
     setBumpsFactor(getRegSetting(key, L"bumpsFactor", 0.0f), (HWND)-1);
@@ -468,7 +449,6 @@ void Settings::readSettingsForCar(char *car) {
 
     text(L"Loading settings for car %s", car);
 
-    setFfbType(type);
     setMinForce(min, (HWND)-1);
     setMaxForce(max, (HWND)-1);
     setBumpsFactor(bumps, (HWND)-1);
@@ -589,16 +569,6 @@ MOVE:
     delete[] path;
     delete[] tmpPath;
 
-}
-
-wchar_t *Settings::ffbTypeString(int type) {
-    switch (type) {
-        case FFBTYPE_360HZ:             return L"360 Hz";
-        case FFBTYPE_360HZ_INTERP:      return L"360 Hz interpolated";
-        case FFBTYPE_DIRECT_FILTER:     return L"60 Hz direct filtered 360";
-        case FFBTYPE_DIRECT_FILTER_720: return L"60 Hz direct filtered 720";
-        default:                        return L"Unknown FFB type";
-    }
 }
 
 PWSTR Settings::getIniPath() {
