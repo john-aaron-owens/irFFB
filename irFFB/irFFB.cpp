@@ -80,7 +80,7 @@ int force = 0;
 volatile float suspForce = 0.0f; 
 volatile float yawForce[DIRECT_INTERP_SAMPLES];
 __declspec(align(16)) volatile float suspForceST[DIRECT_INTERP_SAMPLES];
-bool onTrack = false, stopped = true, deviceChangePending = false, logiWheel = false;
+bool onTrack = false, stopped = true, deviceChangePending = false;
 
 volatile int ffbMag = 0;
 volatile bool nearStops = false;
@@ -267,7 +267,7 @@ DWORD WINAPI readWheelThread(LPVOID lParam)
         }
 
         int ffbMagDelta = ffbMag - lastffbMag;
-        ffbMagDelta = (min(500, abs(ffbMagDelta)) * sign(ffbMagDelta));
+        ffbMagDelta = (min(800, abs(ffbMagDelta)) * sign(ffbMagDelta));
         ffbMag = lastffbMag + ffbMagDelta;
 
         pforce.lOffset = ffbMag;
@@ -511,16 +511,6 @@ void clippingReport()
     if (clippedPerCent > 2.5f)
         text(L"Consider increasing max force to reduce clipping");
     samples = clippedSamples = 0;
-
-}
-
-void logiRpmLed(float *rpm, float redline) 
-{    
-    logiLedData.rpmData.rpm = *rpm / (redline * 0.90f);
-    logiLedData.rpmData.rpmFirstLed = 0.65f;
-    logiLedData.rpmData.rpmRedLine = 1.0f;
-
-    ffdevice->Escape(&logiEscape);
 
 }
 
@@ -812,9 +802,6 @@ int APIENTRY wWinMain(
                 lastTrackSurface = *trackSurface;
             }
 
-            if (ffdevice && logiWheel)
-                logiRpmLed(rpm, redline);
-
             yaw = 0.0f;
 
             if (*speed > 2.0f) 
@@ -831,7 +818,6 @@ int APIENTRY wWinMain(
                     float halfMaxForce = (float)(settings.getMaxForce() >> 1);
                     float r = *vY / *vX;
                     float sa, asa, ar = abs(r);
-                    float reqSteer, uSteer;
 
                     if (*vX < 0.0f)
                         r = -r;
@@ -1919,14 +1905,6 @@ void initDirectInput()
         return;
     }
 
-    DWORD vidpid = getDeviceVidPid(ffdevice);
-    if (LOWORD(vidpid) == 0x046d) {
-        logiWheel = true;
-        setLogiWheelRange(HIWORD(vidpid));
-    }
-    else
-        logiWheel = false;
-
     if (FAILED(ffdevice->Acquire())) {
         text(L"Failed to acquire DI device");
         return;
@@ -1955,9 +1933,6 @@ void initDirectInput()
         text(L"Error setting parameters of DIEFFECT: %d", hr);
 
     LeaveCriticalSection(&effectCrit);
-
-    if (vidpid != 0)
-        hidGuardian->setDevice(LOWORD(vidpid), HIWORD(vidpid));
 }
 
 void releaseDirectInput() 
